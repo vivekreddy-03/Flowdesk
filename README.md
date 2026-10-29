@@ -30,3 +30,7 @@ This is a front-end prototype. Data is stored in the current browser using local
 
 ## License
 See [LICENSE](LICENSE).
+
+## Full-stack pilot version
+
+The Node.js + SQLite application is in `src/` and its web interface is in `public/`. See [README-FULLSTACK.md](README-FULLSTACK.md) for local setup, [DEPLOYMENT-STEP6.md](DEPLOYMENT-STEP6.md) for deployment steps, and [PILOT-GUIDE.md](PILOT-GUIDE.md) for the controlled pilot checklist. The root-level static prototype remains available for GitHub Pages; GitHub Pages cannot run the full-stack API server.
