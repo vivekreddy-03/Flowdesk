@@ -1,4 +1,4 @@
-name: Deploy Flowdesk to GitHub Pages
+name: Publish Flowdesk site
 
 on:
   push:
@@ -6,31 +6,24 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: "pages"
+  group: "flowdesk-publish"
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+      - name: Publish website files
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          enablement: true
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: .
+          force_orphan: true
+          enable_jekyll: false
+          exclude_assets: '.github,README.md,LICENSE,vercel.json'
