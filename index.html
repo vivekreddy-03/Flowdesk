@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#172B4D">
+<meta name="description" content="Flowdesk brings service-business operations and creator income into one clear workspace.">
+<meta property="og:title" content="Flowdesk — Your business, in order">
+<meta property="og:description" content="Bookings, clients, brand deals and cash flow in one calm workspace.">
+<title>Flowdesk — Your business, in order</title>
+<link rel="icon" href="./public/flowdesk-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar" id="sidebar">
+<a class="brand" href="#"><span class="brand-mark">f<span>.</span></span><span>flowdesk<span class="teal">.</span></span></a>
+<p class="eyebrow side-label">WORKSPACE</p>
+<button class="workspace-switch" id="workspaceSwitch"><span class="workspace-avatar" id="workspaceIcon">S</span><span><b id="workspaceName">Service Business</b><small id="workspaceHint">Your daily operations</small></span><span class="chevron">⌄</span></button>
+<div class="workspace-menu hidden" id="workspaceMenu"><button data-workspace="service">S　 Service Business</button><button data-workspace="creator">C　 Creator Hub</button></div>
+<p class="eyebrow side-label">OVERVIEW</p>
+<nav id="navList">
+<button class="nav-item active" data-view="overview">◫　Overview</button>
+<button class="nav-item" data-view="bookings" data-service-only>▦　Bookings <span id="bookingNavCount" class="nav-count">0</span></button>
+<button class="nav-item" data-view="clients" data-service-only>♙　Clients</button>
+<button class="nav-item hidden" data-view="deals" data-creator-only>✳　Brand deals</button>
+<button class="nav-item" data-view="transactions">↔　Transactions</button>
+</nav>
+<div class="sidebar-bottom"><div class="help-card"><span class="gold">✦</span><b>One clear view.</b><p>Your work, money and momentum — all in one place.</p></div><button class="nav-item" id="loadSampleBtn">✳　Load sample data</button><button class="nav-item" id="exportBtn">⇩　Export workspace</button><div class="profile"><span class="avatar">FD</span><span><b>Your workspace</b><small>Personal account</small></span></div></div>
+</aside>
+<main class="main">
+<header class="topbar"><button class="mobile-menu" id="mobileMenu">☰</button><div>Workspace <span class="slash">/</span> <b id="crumbTitle">Overview</b></div><div class="top-actions"><span class="today-pill"><i></i><span id="todayLabel">Your workspace</span></span><button class="icon-button" id="resetBtn" title="Clear workspace data">↻</button></div></header>
+<div class="page">
+<section class="welcome"><div><p class="eyebrow"><span class="line"></span> YOUR BUSINESS, IN ORDER</p><h1 id="pageTitle">Your work, in focus <span class="gold">✳</span></h1><p id="pageSubtitle">Here's what's happening across your work today.</p></div><button class="primary-button" id="primaryAction">＋ <span id="primaryActionLabel">Add booking</span></button></section>
+<section class="metrics" id="metricsGrid">
+<article class="metric"><div class="metric-head"><span>TOTAL INCOME</span><i class="metric-icon income">↗</i></div><strong id="incomeMetric">₹84,500</strong><p><span class="muted-chip">Workspace total</span> recorded income</p><div class="spark"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+<article class="metric"><div class="metric-head"><span>TOTAL EXPENSES</span><i class="metric-icon expense">↘</i></div><strong id="expenseMetric">₹21,300</strong><p><span class="muted-chip">Tracked</span> this month</p><div class="spark muted"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+<article class="metric net-card"><div class="metric-head"><span>NET CASH FLOW</span><i class="metric-icon net">⌁</i></div><strong id="netMetric">₹63,200</strong><p><span class="muted-chip">Calculated</span> income − expenses</p><div class="net-track"><span id="netTrack"></span></div></article>
+<article class="metric"><div class="metric-head"><span id="fourthMetricLabel">UPCOMING BOOKINGS</span><i class="metric-icon booking">▦</i></div><strong id="fourthMetric">8</strong><p class="gold" id="fourthMetricFoot">3 need confirmation</p><div class="mini-dots">••••••••••••••••••</div></article>
+</section>
+<section class="content-grid">
+<article class="panel cash-panel"><div class="panel-header"><div><h2>Cash flow</h2><p>Income and expenses at a glance</p></div><select id="cashRange"><option value="6">Last 6 months</option><option value="3">Last 3 months</option></select></div><div class="legend"><span><i class="legend-income"></i>Income</span><span><i class="legend-expense"></i>Expenses</span></div><div class="chart-area"><div class="y-labels"><span>₹1L</span><span>₹75k</span><span>₹50k</span><span>₹25k</span><span>₹0</span></div><div class="plot"><div class="grid-lines"><i></i><i></i><i></i><i></i><i></i></div><div class="bars" id="cashBars"></div><div class="months" id="chartMonths"></div></div></div><p class="chart-note" id="chartNote">Your income is staying ahead of expenses. Keep it up.</p></article>
+<article class="panel"><div class="panel-header"><div><h2 id="activityHeading">Upcoming bookings</h2><p id="activitySubheading">Keep the day running smoothly</p></div><button class="text-button" id="viewAllBtn">View all →</button></div><div id="activityList" class="activity-list"></div></article>
+</section>
+<section class="panel records-panel"><div class="panel-header records-header"><div><h2 id="recordsTitle">Recent transactions</h2><p id="recordsSubtitle">Your latest money movements</p></div><div class="record-actions"><input id="searchInput" type="search" placeholder="⌕  Search records..." aria-label="Search records"><button class="secondary-button" id="addRecordBtn">＋ Add transaction</button></div></div><div class="table-wrap"><table><thead id="tableHead"></thead><tbody id="tableBody"></tbody></table></div><div class="table-footer"><span id="recordCount">Recent records</span><button class="text-button" id="seeAllRecords">See all →</button></div></section>
+<footer><b>◈ Flowdesk</b><span>Make room for the work that matters.</span><span>© <span id="year"></span> Flowdesk</span></footer>
+</div></main></div>
+<div class="modal-backdrop hidden" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><form class="modal" id="recordForm"><div class="modal-head"><div><p class="eyebrow">FLOWDESK WORKSPACE</p><h2 id="modalTitle">Add a record</h2><p id="modalDescription">Keep your workspace up to date.</p></div><button type="button" class="modal-close" id="closeModal">×</button></div><div id="formFields" class="form-fields"></div><div class="modal-actions"><button type="button" class="secondary-button" id="cancelModal">Cancel</button><button type="submit" class="primary-button">Save record →</button></div></form></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div><script src="./app.js"></script>
+</body></html>
