@@ -13,7 +13,7 @@ Flowdesk brings client work, bookings, brand collaborations and cash flow into o
 - Income, expenses, net cash flow and monthly cash-flow visualization
 - Demo data for safe product walkthroughs
 - JSON workspace export
-- SQLite persistence and a verified local backup command
+- SQLite persistence in local development and configurable data directory
 - Responsive desktop and mobile interface
 - Production security headers, request validation, rate limiting and same-origin write checks
 
@@ -66,36 +66,20 @@ npm run backup
 
 GitHub Actions runs the syntax checks and integration tests on pushes to `main` and pull requests.
 
-## API overview
-
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| GET | `/api/health` | Health check |
-| POST | `/api/auth/register` | Create an account |
-| POST | `/api/auth/login` | Start a session |
-| POST | `/api/auth/logout` | End a session |
-| GET | `/api/auth/me` | Current account |
-| GET | `/api/records` | List/search workspace records |
-| POST | `/api/records` | Create a record |
-| PATCH | `/api/records/:id` | Update a record |
-| DELETE | `/api/records/:id` | Delete a record |
-| POST | `/api/demo-data` | Add sample records |
-
-All record queries and mutations are scoped to the authenticated account. The records endpoint accepts `workspace=service` or `workspace=creator`; optional `search` and `kind` filters are supported.
-
 ## Deploy the full-stack application
 
-The repository includes a Dockerfile and [Render Blueprint](render.yaml).
+The repository includes a Dockerfile and [Render Blueprint](render.yaml), configured for a **free Render web service**.
 
-1. Push the repository to GitHub.
-2. In Render, create a new Blueprint and select this repository.
-3. Review the web-service and persistent-disk charges before confirming.
-4. Confirm the generated `SESSION_SECRET` and persistent `DATA_DIR=/var/data` settings.
-5. After deployment, verify `/api/health` and complete the manual smoke-test checklist in [DEPLOYMENT-STEP6.md](DEPLOYMENT-STEP6.md).
+1. In Render, create a new Blueprint and select this repository.
+2. Confirm the plan is **Free** and no paid disk or add-on is included.
+3. Confirm Render generates a unique `SESSION_SECRET`.
+4. After deployment, verify `/api/health` and complete the manual smoke-test checklist in [DEPLOYMENT-STEP6.md](DEPLOYMENT-STEP6.md).
+
+**Free-tier limitation:** the free configuration has no persistent disk. SQLite data is stored in the container filesystem and may be lost on restarts or redeploys. Use fictional demo data only. Do not use this free deployment for real customer data or describe it as durable production hosting. Persistent storage requires a paid plan or a database architecture designed for the selected host.
 
 **Deployment status:** configuration is committed; a live hosted deployment and browser smoke test must be completed and independently verified before describing the app as publicly deployed.
 
-GitHub Pages can host the repository's static prototype, but it cannot run the Node.js API or SQLite database. Use the Render-hosted application for the full-stack product.
+GitHub Pages can host static assets, but it cannot run the Node.js API or SQLite database. Use the Render-hosted web service for the full-stack product.
 
 ## Project documentation
 
