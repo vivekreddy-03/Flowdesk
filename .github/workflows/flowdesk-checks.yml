@@ -6,9 +6,17 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: flowdesk-checks-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -18,5 +26,5 @@ jobs:
           node-version: '22'
       - name: Check JavaScript syntax
         run: npm run check
-      - name: Run tests
+      - name: Run full-stack integration tests
         run: npm test
