@@ -2,7 +2,7 @@
 
 **A full-stack operations workspace for independent service businesses and content creators.**
 
-> **Recruiter demo:** [Open the read-only Flowdesk demo](https://vivekreddy-03.github.io/Flowdesk/?demo=1) — uses fictional sample data and does not require an account. The hosted demo is a static frontend preview; the Node.js + SQLite API runs locally and is not part of GitHub Pages.
+> **Recruiter demo:** [Open the interactive Flowdesk demo](https://vivekreddy-03.github.io/Flowdesk/?demo=1) — no account required. Recruiters can add, edit, delete, search and export fictional sample records in both workspaces. Demo changes are saved in that browser's local storage only; they are not sent to a server or shared with other visitors.
 
 Flowdesk brings client work, bookings, brand collaborations and cash flow into one responsive dashboard. It includes two separate workspaces—Service Business and Creator Hub—with account-based data isolation.
 
@@ -70,17 +70,17 @@ GitHub Actions runs the syntax checks and integration tests on pushes to `main` 
 
 ## Deployment
 
-### Recruiter demo (static, read-only)
+### Recruiter demo (interactive browser preview)
 
 The GitHub Pages workflow publishes only the `public/` frontend directory. The demo is available at:
 
 **https://vivekreddy-03.github.io/Flowdesk/?demo=1**
 
-It loads fictional records in the browser so a recruiter can explore the Service Business and Creator Hub dashboards, metrics, chart, search and navigation without creating an account. It is read-only and does not connect to the Node.js API or save data.
+It loads fictional records in the browser so a recruiter can explore the Service Business and Creator Hub dashboards, metrics, chart and navigation without creating an account. Add, edit and delete actions work against browser-local demo data; changes update the dashboard and persist in that browser using local storage. The reset demo data action restores the original samples. This is a client-side demonstration only: changes are not stored on a server, shared across visitors, or connected to the Node.js API.
 
 ### Full-stack application
 
-The full application runs locally with the Node.js HTTP server and SQLite database. The repository includes a Dockerfile and a Render Blueprint, but a hosted full-stack service has **not** been verified. Render's service-creation API returned a billing-information-required error in this workspace, even with the Free plan selected.
+The full application runs locally with the Node.js HTTP server and SQLite database, including real server-side authentication and account-scoped CRUD. The repository includes a Dockerfile and a Render Blueprint, but a hosted full-stack service has **not** been verified. Render's service-creation API returned a billing-information-required error in this workspace, even with the Free plan selected.
 
 The Render free filesystem is ephemeral, so SQLite records can be lost on restarts, redeploys or sleep. Do not use that configuration for real customer data. A durable hosted full-stack deployment needs a host/database combination that supports persistent storage and has been verified before it is described as live.
 
@@ -99,7 +99,7 @@ Built a responsive multi-workspace business management application using HTML, C
 
 ## Current project status
 
-The full-stack codebase and recruiter-facing static demo are in this repository. Do not describe the static demo as a live full-stack deployment or claim external customer usage.
+The full-stack codebase and interactive browser-based recruiter demo are in this repository. Do not describe the public demo as a live full-stack deployment or claim external customer usage.
 
 ## License
 
