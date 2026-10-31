@@ -22,7 +22,7 @@ const mime = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8
 const userById = db.prepare('SELECT id, name, email, created_at FROM users WHERE id = ?');
 const selectRecord = \`SELECT id, user_id, workspace, kind, title, details, amount, flow_type, status, record_date, created_at, updated_at FROM records\`;
 function json(res, status, data, headers={}) { const body=JSON.stringify(data); res.writeHead(status, {'Content-Type':'application/json; charset=utf-8','Content-Length':Buffer.byteLength(body), 'Cache-Control':'no-store', ...headers}); res.end(body); }
-function securityHeaders(res) { res.setHeader('X-Content-Type-Options','nosniff'); res.setHeader('X-Frame-Options','DENY'); res.setHeader('Referrer-Policy','no-referrer'); res.setHeader('Permissions-Policy','camera=(), microphone=(), geolocation=()'); res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"); if(isProduction) res.setHeader('Strict-Transport-Security','max-age=31536000; includeSubDomains'); }
+function securityHeaders(res) { res.setHeader('X-Content-Type-Options','nosniff'); res.setHeader('X-Frame-Options','DENY'); res.setHeader('Referrer-Policy','no-referrer'); res.setHeader('Permissions-Policy','camera=(), microphone=(), geolocation=()'); res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; connect-src 'self'; font-src 'self' data: https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"); if(isProduction) res.setHeader('Strict-Transport-Security','max-age=31536000; includeSubDomains'); }
 function parseCookies(req) { const out={}; for(const part of (req.headers.cookie||'').split(';')) { const i=part.indexOf('='); if(i>0) { try { out[part.slice(0,i).trim()]=decodeURIComponent(part.slice(i+1).trim()); } catch { /* Ignore malformed cookie values instead of failing the request. */ } } } return out; }
 function tokenHash(token) { return crypto.createHmac('sha256',sessionSecret).update(token).digest('hex'); }
 function sessionCookie(token, clear=false) { const parts=[\`\${COOKIE}=\${clear?'':encodeURIComponent(token)}\`,'Path=/','HttpOnly','SameSite=Lax']; if(isProduction) parts.push('Secure'); parts.push(\`Max-Age=\${clear?0:Math.floor(SESSION_MS/1000)}\`); return parts.join('; '); }
@@ -48,10 +48,9 @@ async function handleApi(req,res,url) {
     if (isProduction) {
       if (req.headers['sec-fetch-site'] === 'cross-site') return json(res,403,{error:'Cross-site requests are not allowed.'});
       const origin=req.headers.origin;
-      if (origin) {
-        try { if (new URL(origin).host !== req.headers.host) return json(res,403,{error:'Request origin is not allowed.'}); }
-        catch { return json(res,403,{error:'Request origin is not allowed.'}); }
-      }
+      if (!origin) return json(res,403,{error:'A same-origin request is required.'});
+      try { if (new URL(origin).host !== req.headers.host) return json(res,403,{error:'Request origin is not allowed.'}); }
+      catch { return json(res,403,{error:'Request origin is not allowed.'}); }
     }
   }
   if(limited(apiAttempts,ip,180,60000)) return json(res,429,{error:'Too many requests. Please try again shortly.'});
@@ -99,7 +98,7 @@ async function handleApi(req,res,url) {
   }
   return json(res,404,{error:'API route not found.'});
 }
-function serveStatic(req,res,url) { let pathname=decodeURIComponent(url.pathname); if(pathname==='/')pathname='/index.html'; const resolved=path.resolve(PUBLIC,'.'+pathname); if(!resolved.startsWith(PUBLIC+path.sep)&&resolved!==PUBLIC)return json(res,403,{error:'Forbidden'}); fs.stat(resolved,(err,stat)=>{if(err||!stat.isFile()){if(path.extname(pathname))return json(res,404,{error:'Not found'});return fs.createReadStream(path.join(PUBLIC,'index.html')).on('error',()=>json(res,500,{error:'Unable to load application'})).pipe(res);}res.writeHead(200,{'Content-Type':mime[path.extname(resolved)]||'application/octet-stream','Cache-Control':isProduction?'public, max-age=3600':'no-store'});fs.createReadStream(resolved).pipe(res);}); }
+function serveStatic(req,res,url) { let pathname=decodeURIComponent(url.pathname); if(pathname==='/')pathname='/index.html'; const resolved=path.resolve(PUBLIC,'.'+pathname); if(!resolved.startsWith(PUBLIC+path.sep)&&resolved!==PUBLIC)return json(res,403,{error:'Forbidden'}); fs.stat(resolved,(err,stat)=>{if(err||!stat.isFile()){if(path.extname(pathname))return json(res,404,{error:'Not found'});return fs.createReadStream(path.join(PUBLIC,'index.html')).on('error',()=>json(res,500,{error:'Unable to load application'})).pipe(res);}res.writeHead(200,{'Content-Type':mime[path.extname(resolved)]||'application/octet-stream','Cache-Control':'no-cache'});fs.createReadStream(resolved).pipe(res);}); }
 const server=http.createServer(async(req,res)=>{securityHeaders(res);try{const url=new URL(req.url,'http://localhost');if(url.pathname.startsWith('/api/')){if(!['GET','POST','PATCH','DELETE'].includes(req.method))return json(res,405,{error:'Method not allowed.'},{Allow:'GET, POST, PATCH, DELETE'});return await handleApi(req,res,url);}return serveStatic(req,res,url);}catch(e){console.error('Flowdesk request error:',e);if(!res.headersSent)return json(res,e.status||500,{error:e.status?e.message:'Something went wrong. Please try again.'});res.destroy();}});
 server.listen(PORT,()=>console.log(\`Flowdesk running at http://localhost:\${PORT}\`));
 function shutdown(){server.close(()=>{db.close();process.exit(0);});}
