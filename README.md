@@ -2,6 +2,8 @@
 
 **A full-stack operations workspace for independent service businesses and content creators.**
 
+> **Recruiter demo:** [Open the read-only Flowdesk demo](https://vivekreddy-03.github.io/Flowdesk/?demo=1) — uses fictional sample data and does not require an account. The hosted demo is a static frontend preview; the Node.js + SQLite API runs locally and is not part of GitHub Pages.
+
 Flowdesk brings client work, bookings, brand collaborations and cash flow into one responsive dashboard. It includes two separate workspaces—Service Business and Creator Hub—with account-based data isolation.
 
 ## Product capabilities
@@ -27,7 +29,7 @@ Flowdesk brings client work, bookings, brand collaborations and cash flow into o
 | Database | SQLite using Node's built-in `node:sqlite` |
 | Authentication | Node.js crypto (scrypt password hashing, random session tokens, HMAC token hashes) |
 | Testing | Node.js built-in test runner and HTTP integration tests |
-| Deployment | Docker and Render Blueprint |
+| Deployment | Docker, Render Blueprint, GitHub Pages demo |
 | CI | GitHub Actions |
 
 No third-party runtime npm packages are required.
@@ -66,20 +68,23 @@ npm run backup
 
 GitHub Actions runs the syntax checks and integration tests on pushes to `main` and pull requests.
 
-## Deploy the full-stack application
+## Deployment
 
-The repository includes a Dockerfile and [Render Blueprint](render.yaml), configured for a **free Render web service**.
+### Recruiter demo (static, read-only)
 
-1. In Render, create a new Blueprint and select this repository.
-2. Confirm the plan is **Free** and no paid disk or add-on is included.
-3. Confirm Render generates a unique `SESSION_SECRET`.
-4. After deployment, verify `/api/health` and complete the manual smoke-test checklist in [DEPLOYMENT-STEP6.md](DEPLOYMENT-STEP6.md).
+The GitHub Pages workflow publishes only the `public/` frontend directory. The demo is available at:
 
-**Free-tier limitation:** the free configuration has no persistent disk. SQLite data is stored in the container filesystem and may be lost on restarts or redeploys. Use fictional demo data only. Do not use this free deployment for real customer data or describe it as durable production hosting. Persistent storage requires a paid plan or a database architecture designed for the selected host.
+**https://vivekreddy-03.github.io/Flowdesk/?demo=1**
 
-**Deployment status:** configuration is committed; a live hosted deployment and browser smoke test must be completed and independently verified before describing the app as publicly deployed.
+It loads fictional records in the browser so a recruiter can explore the Service Business and Creator Hub dashboards, metrics, chart, search and navigation without creating an account. It is read-only and does not connect to the Node.js API or save data.
 
-GitHub Pages can host static assets, but it cannot run the Node.js API or SQLite database. Use the Render-hosted web service for the full-stack product.
+### Full-stack application
+
+The full application runs locally with the Node.js HTTP server and SQLite database. The repository includes a Dockerfile and a Render Blueprint, but a hosted full-stack service has **not** been verified. Render's service-creation API returned a billing-information-required error in this workspace, even with the Free plan selected.
+
+The Render free filesystem is ephemeral, so SQLite records can be lost on restarts, redeploys or sleep. Do not use that configuration for real customer data. A durable hosted full-stack deployment needs a host/database combination that supports persistent storage and has been verified before it is described as live.
+
+GitHub Pages cannot execute the Node.js API or SQLite database; it hosts only the recruiter-facing static demo.
 
 ## Project documentation
 
@@ -94,7 +99,7 @@ Built a responsive multi-workspace business management application using HTML, C
 
 ## Current project status
 
-The full-stack codebase and deployment configuration are in this repository. Do not claim a live production deployment, external customer usage, or completed hosted smoke tests until those steps have actually been performed.
+The full-stack codebase and recruiter-facing static demo are in this repository. Do not describe the static demo as a live full-stack deployment or claim external customer usage.
 
 ## License
 
