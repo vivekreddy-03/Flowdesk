@@ -6,6 +6,7 @@ const ok = data => ({ success: true, data });
 const obj = v => v && typeof v === 'object' && !Array.isArray(v);
 const text = (v, max, min = 1) => typeof v === 'string' && v.trim().length >= min && v.trim().length <= max;
 const emailValid = v => typeof v === 'string' && v.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+const validDate = v => { if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false; const d = new Date(v + 'T00:00:00.000Z'); return !Number.isNaN(d.getTime()) && d.toISOString().slice(0,10) === v; };
 function detailsValid(v) { return obj(v) && Object.values(v).every(x => x === null || ['string','number','boolean'].includes(typeof x)) && Object.values(v).every(x => typeof x !== 'string' || x.length <= 1000); }
 const workspace = { safeParse(v) { return workspaceValues.includes(v) ? ok(v) : fail('workspace', 'Invalid workspace'); } };
 const kind = { safeParse(v) { return kindValues.includes(v) ? ok(v) : fail('kind', 'Invalid record type'); } };
@@ -20,7 +21,7 @@ const recordCreate = { safeParse(v) {
   const amount = v.amount === undefined ? 0 : Number(v.amount); if (!Number.isFinite(amount) || amount < 0 || amount > 1e9) return fail('amount','Amount must be between 0 and 1,000,000,000');
   const flow_type = v.flow_type === undefined ? 'none' : v.flow_type; if (!flowValues.includes(flow_type)) return fail('flow_type','Invalid flow type');
   const status = v.status === undefined ? 'Active' : v.status; if (!text(status,60)) return fail('status','Status is required (max 60 characters)');
-  const record_date = v.record_date === undefined ? null : v.record_date; if (record_date !== null && (typeof record_date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(record_date) || Number.isNaN(Date.parse(record_date)))) return fail('record_date','Date must use YYYY-MM-DD');
+  const record_date = v.record_date === undefined ? null : v.record_date; if (record_date !== null && (!validDate(record_date))) return fail('record_date','Date must use YYYY-MM-DD');
   return ok({workspace:v.workspace,kind:v.kind,title:v.title.trim(),details,amount,flow_type,status:status.trim(),record_date});
 } };
 const recordPatch = { safeParse(v) {
@@ -31,7 +32,7 @@ const recordPatch = { safeParse(v) {
   if ('amount' in v) { const n=Number(v.amount); if(!Number.isFinite(n)||n<0||n>1e9) return fail('amount','Invalid amount'); out.amount=n; }
   if ('flow_type' in v) { if(!flowValues.includes(v.flow_type)) return fail('flow_type','Invalid flow type'); out.flow_type=v.flow_type; }
   if ('status' in v) { if(!text(v.status,60)) return fail('status','Invalid status'); out.status=v.status.trim(); }
-  if ('record_date' in v) { if(v.record_date!==null&&(typeof v.record_date!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(v.record_date)||Number.isNaN(Date.parse(v.record_date)))) return fail('record_date','Date must use YYYY-MM-DD'); out.record_date=v.record_date; }
+  if ('record_date' in v) { if(v.record_date!==null&&(!validDate(v.record_date))) return fail('record_date','Date must use YYYY-MM-DD'); out.record_date=v.record_date; }
   return ok(out);
 } };
 module.exports = { workspace, kind, recordCreate, recordPatch, register, login };
