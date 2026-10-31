@@ -2,7 +2,7 @@ services:
   - type: web
     name: flowdesk-pilot
     runtime: docker
-    plan: starter
+    plan: free
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
@@ -11,9 +11,3 @@ services:
         value: 3000
       - key: SESSION_SECRET
         generateValue: true
-      - key: DATA_DIR
-        value: /var/data
-    disk:
-      name: flowdesk-data
-      mountPath: /var/data
-      sizeGB: 1
