@@ -25,3 +25,7 @@ Use fictional records during the pilot. Do not use real customer or financial in
 
 ## Decision
 Record each issue with steps to reproduce, expected behavior, actual behavior and severity. Fix critical and high-severity issues before considering a paid trial.
+
+## Automated checks
+
+Before a pilot walkthrough, run `npm run check` and `npm test` from the repository root. The CI workflow runs these same commands for pushes to `main` and pull requests targeting `main`.
