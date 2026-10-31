@@ -216,7 +216,16 @@ test('Flowdesk full-stack API: health, security, auth, CRUD, isolation and persi
     assert.equal(deleteAlice.response.status, 404);
   });
 
-  await t.test('creates demo records and keeps them in the account database', async () => {
+  await t.test('allows the record owner to delete their own record', async () => {
+    const deleted = await request('/api/records/' + bookingId, {
+      method: 'DELETE', cookie: alice.cookie, headers: { origin: baseUrl }
+    });
+    assert.equal(deleted.response.status, 200);
+    const list = await request('/api/records?workspace=service', { cookie: alice.cookie });
+    assert.equal(list.data.records.length, 0);
+  });
+
+  await t.test('creates demo records in the selected account workspace', async () => {
     const demo = await request('/api/demo-data', {
       method: 'POST', cookie: alice.cookie, body: { workspace: 'creator' },
       headers: { origin: baseUrl }
@@ -229,7 +238,7 @@ test('Flowdesk full-stack API: health, security, auth, CRUD, isolation and persi
     assert.equal(persisted.data.records.length, 1);
   });
 
-  await t.test('rejects malformed methods and oversized request bodies', async () => {
+  await t.test('rejects unsupported methods and malformed JSON', async () => {
     const method = await fetch(baseUrl + '/api/health', { method: 'PUT' });
     assert.equal(method.status, 405);
     const badJson = await fetch(baseUrl + '/api/auth/login', {
@@ -238,6 +247,12 @@ test('Flowdesk full-stack API: health, security, auth, CRUD, isolation and persi
       body: '{not-json'
     });
     assert.equal(badJson.status, 400);
+    const oversized = await fetch(baseUrl + '/api/auth/login', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', origin: baseUrl },
+      body: JSON.stringify({ payload: 'x'.repeat(70000) })
+    });
+    assert.equal(oversized.status, 413);
   });
 
   await t.test('logs out and invalidates the session', async () => {
