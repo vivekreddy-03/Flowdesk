@@ -131,6 +131,12 @@ test('Flowdesk full-stack API: health, security, auth, CRUD, isolation and persi
       headers: { origin: baseUrl }
     });
     assert.equal(invalidDate.response.status, 400);
+    const wrongWorkspaceKind = await request('/api/records', {
+      method: 'POST', cookie: alice.cookie,
+      body: { workspace: 'service', kind: 'deal', title: 'Not allowed here' },
+      headers: { origin: baseUrl }
+    });
+    assert.equal(wrongWorkspaceKind.response.status, 400);
   });
 
   await t.test('enforces same-origin writes in production', async () => {
@@ -235,7 +241,7 @@ test('Flowdesk full-stack API: health, security, auth, CRUD, isolation and persi
     const records = await request('/api/records?workspace=creator', { cookie: alice.cookie });
     assert.equal(records.data.records.length, 2);
     const persisted = await request('/api/records?workspace=service', { cookie: alice.cookie });
-    assert.equal(persisted.data.records.length, 1);
+    assert.equal(persisted.data.records.length, 0);
   });
 
   await t.test('rejects unsupported methods and malformed JSON', async () => {
