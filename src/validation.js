@@ -16,6 +16,7 @@ const recordCreate = { safeParse(v) {
   if (!obj(v) || Object.keys(v).some(k => !['workspace','kind','title','details','amount','flow_type','status','record_date'].includes(k))) return fail('input','Unexpected record field');
   if (!workspaceValues.includes(v.workspace)) return fail('workspace','Invalid workspace');
   if (!kindValues.includes(v.kind)) return fail('kind','Invalid record type');
+  if ((v.workspace === 'service' && v.kind === 'deal') || (v.workspace === 'creator' && ['booking','client'].includes(v.kind))) return fail('kind','This record type is not available in the selected workspace');
   if (!text(v.title,240)) return fail('title','Title is required (max 240 characters)');
   const details = v.details === undefined ? {} : v.details; if (!detailsValid(details)) return fail('details','Details must contain simple values only');
   const amount = v.amount === undefined ? 0 : Number(v.amount); if (!Number.isFinite(amount) || amount < 0 || amount > 1e9) return fail('amount','Amount must be between 0 and 1,000,000,000');
