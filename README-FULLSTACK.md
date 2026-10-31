@@ -41,3 +41,5 @@ Run the suite with `npm test`. The GitHub Actions workflow runs it on pushes to 
 ## Scope and known limitations
 
 This is a portfolio-grade full-stack pilot, not a claim of a fully production-hardened SaaS. Password reset/account recovery, email verification, billing, audit logs, scheduled off-site backups, privacy/legal pages and customer support workflows are not implemented. The SQLite + persistent-disk deployment is a single-instance setup; plan a managed database migration before horizontal scaling or handling significant customer workloads.
+
+The application server source is syntax-checked in CI before the integration test process starts.
