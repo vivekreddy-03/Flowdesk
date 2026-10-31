@@ -13,7 +13,7 @@ A persistent disk is a paid Render feature. If durable storage is needed later, 
 - The repository must be accessible to your Render account.
 - Confirm the service plan is **Free** in the Render dashboard before creating it.
 - The Blueprint generates a unique `SESSION_SECRET` and sets `NODE_ENV=production` and `PORT=3000`.
-- No payment method or paid resource should be required for the intended free pilot; if Render asks for billing details, stop rather than selecting a paid plan.
+- Render's deployment API currently returned a billing-information-required error even when the Free plan was selected. If the dashboard asks for billing details, review its terms yourself; do not select a paid plan or approve paid add-ons.
 
 ## Create the service
 
